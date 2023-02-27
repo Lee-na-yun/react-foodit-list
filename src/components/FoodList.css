@@ -1,7 +1,12 @@
 .FoodListItem {
   display: flex;
+  justify-content: start;
   padding: 10px;
   align-items: center;
+}
+
+.FoodListItem div {
+  display: block;
 }
 
 .FoodLsitItem_img {
