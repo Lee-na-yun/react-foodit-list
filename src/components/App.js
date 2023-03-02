@@ -1,6 +1,6 @@
 import FoodList from "./FoodList";
 //import mockItems from "../mock.json";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { getFoods } from "../api";
 
 function App() {
@@ -15,17 +15,20 @@ function App() {
     setItems(delItem);
   };
 
-  const handleLoadClick = async () => {
+  const handleLoad = async () => {
     const {foods} = await getFoods();
     setItems(foods);
-  }
+  };
+
+  useEffect(() => {
+    handleLoad();
+  }, []);
 
   return (
     <div>
       <button onClick={handleNewClick}>최신순</button>
       <button onClick={handleCalClick}>칼로리순</button>
       <FoodList items={sortedItems} onDelete={handleDelClick}/>
-      <button onClick={handleLoadClick}>불러오기</button>
     </div>
   );
 }
