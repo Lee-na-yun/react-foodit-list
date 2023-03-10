@@ -7,6 +7,7 @@ function App() {
   const [cursor, setCursor] = useState(null);
   const [items, setItems] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [loadingError, setLoadingError] = useState(null);
 
   const handleNewestClick = () => setOrder('createdAt');
 
@@ -21,8 +22,10 @@ function App() {
     let result;
     try{
       setIsLoading(true);
+      setLoadingError(null);
       result = await getFoods(options);
-    } catch{
+    } catch(error){
+      setLoadingError(error);
       return;
     } finally{
       setIsLoading(false);
@@ -58,6 +61,7 @@ function App() {
       <button onClick={handleCalorieClick}>칼로리순</button>
       <FoodList items={sortedItems} onDelete={handleDelete} />
       {cursor && (<button disabled={isLoading} onClick={handleLoadMore}>더보기</button>)}
+      {loadingError?.message && <span>{loadingError.message}</span>}
     </div>
   );
 }
