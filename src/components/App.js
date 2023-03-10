@@ -6,6 +6,7 @@ function App() {
   const [order, setOrder] = useState('createdAt');
   const [cursor, setCursor] = useState(null);
   const [items, setItems] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleNewestClick = () => setOrder('createdAt');
 
@@ -17,10 +18,17 @@ function App() {
   };
 
   const handleLoad = async (options) => {
-    const {
-      foods,
-      paging: { nextCursor },
-    } = await getFoods(options);
+    let result;
+    try{
+      setIsLoading(true);
+      result = await getFoods(options);
+    } catch{
+      return;
+    } finally{
+      setIsLoading(false);
+    }
+
+    const { foods, paging: { nextCursor }} = result;
     if (!options.cursor) {
       setItems(foods);
     } else {
@@ -49,7 +57,7 @@ function App() {
       <button onClick={handleNewestClick}>최신순</button>
       <button onClick={handleCalorieClick}>칼로리순</button>
       <FoodList items={sortedItems} onDelete={handleDelete} />
-      {cursor && <button onClick={handleLoadMore}>더보기</button>}
+      {cursor && (<button disabled={isLoading} onClick={handleLoadMore}>더보기</button>)}
     </div>
   );
 }
